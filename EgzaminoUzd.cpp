@@ -3,8 +3,10 @@
 #include <string>
 #include <locale>
 #include <codecvt>
+#include <map>
+#include <sstream>
 
-void skaitytiFaila(const std::string& failoPavadinimas) {
+void skaitytiFaila(const std::string& failoPavadinimas, std::wstring& platusTurinys) {
     std::setlocale(LC_ALL, "lt_LT.UTF-8");
 
     std::ifstream failas(failoPavadinimas, std::ios::binary);
@@ -19,12 +21,12 @@ void skaitytiFaila(const std::string& failoPavadinimas) {
     std::string failoTurinys((std::istreambuf_iterator<char>(failas)),
         std::istreambuf_iterator<char>());
 
-    std::wstring platusTurinys = keitiklis.from_bytes(failoTurinys);
+    platusTurinys = keitiklis.from_bytes(failoTurinys);
 
     failas.close();
 }
 
-void rasytiFaila(const std::wstring& turinys, const std::string& isvestiesFailoPavadinimas) {
+void rasytiFaila(const std::map<std::wstring, int>& zodziuDaznis, const std::string& isvestiesFailoPavadinimas) {
     std::ofstream isvestiesFailas(isvestiesFailoPavadinimas, std::ios::binary);
 
     if (!isvestiesFailas.is_open()) {
@@ -34,11 +36,21 @@ void rasytiFaila(const std::wstring& turinys, const std::string& isvestiesFailoP
 
     std::wstring_convert<std::codecvt_utf8<wchar_t>> keitiklis;
 
-    std::string utf8Turinys = keitiklis.to_bytes(turinys);
-
-    isvestiesFailas << utf8Turinys;
+    for (const auto& pora : zodziuDaznis) {
+        std::string eilute = keitiklis.to_bytes(pora.first + L": " + std::to_wstring(pora.second) + L"\n");
+        isvestiesFailas << eilute;
+    }
 
     isvestiesFailas.close();
+}
+
+void skaiciuotiZodzius(const std::wstring& turinys, std::map<std::wstring, int>& zodziuDaznis) {
+    std::wstringstream srautas(turinys);
+    std::wstring zodis;
+
+    while (srautas >> zodis) {
+        ++zodziuDaznis[zodis];
+    }
 }
 
 int main() {
@@ -47,19 +59,13 @@ int main() {
 
     std::setlocale(LC_ALL, "lt_LT.UTF-8");
 
-    std::ifstream failas(failoPavadinimas, std::ios::binary);
-    if (!failas.is_open()) {
-        std::cerr << "Nepavyko atidaryti failo: " << failoPavadinimas << std::endl;
-        return 1;
-    }
+    std::wstring platusTurinys;
+    skaitytiFaila(failoPavadinimas, platusTurinys);
 
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> keitiklis;
-    std::string failoTurinys((std::istreambuf_iterator<char>(failas)), std::istreambuf_iterator<char>());
-    std::wstring platusTurinys = keitiklis.from_bytes(failoTurinys);
+    std::map<std::wstring, int> zodziuDaznis;
+    skaiciuotiZodzius(platusTurinys, zodziuDaznis);
 
-    failas.close();
-
-    rasytiFaila(platusTurinys, isvestiesFailoPavadinimas);
+    rasytiFaila(zodziuDaznis, isvestiesFailoPavadinimas);
 
     return 0;
 }
