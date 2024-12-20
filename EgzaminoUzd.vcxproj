@@ -183,6 +183,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="EgzaminoUzd.cpp" />
+    <ClCompile Include="Funkcijos.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Funkcijos.h" />
+    <ClInclude Include="Lib.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

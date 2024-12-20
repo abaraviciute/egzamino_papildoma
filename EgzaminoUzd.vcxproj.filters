@@ -18,5 +18,16 @@
     <ClCompile Include="EgzaminoUzd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Funkcijos.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Lib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Funkcijos.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
