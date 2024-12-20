@@ -20,6 +20,10 @@ std::wstring isvalytiZodi(const std::wstring& zodis) {
     return svarusZodis.substr(start, end - start + 1);
 }
 
+void toLower(std::wstring& str) {
+    std::transform(str.begin(), str.end(), str.begin(), ::towlower);
+}
+
 void skaitytiFaila(const std::string& failoPavadinimas, std::wstring& platusTurinys) {
     std::setlocale(LC_ALL, "lt_LT.UTF-8");
 
@@ -34,6 +38,7 @@ void skaitytiFaila(const std::string& failoPavadinimas, std::wstring& platusTuri
     std::string eilute;
     while (std::getline(failas, eilute)) {
         std::wstring platiEilute = keitiklis.from_bytes(eilute);
+        toLower(platiEilute);
 
         std::wstringstream srautas(platiEilute);
         std::wstring zodis;
