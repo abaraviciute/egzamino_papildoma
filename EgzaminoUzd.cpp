@@ -7,8 +7,15 @@
 #include <sstream>
 #include <algorithm>
 #include <set>
+#include <vector>
+#include <regex>
 
 std::wstring isvalytiZodi(const std::wstring& zodis) {
+    std::wregex urlRegex(L"(https?://[\\w.-]+(/[\\w._~:/?#[\\]@!$&'()*+,;=%-]*)?)|(www\\.[\\w.-]+(/[\\w._~:/?#[\\]@!$&'()*+,;=%-]*)?)|(\\b[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\\b)");
+    if (std::regex_match(zodis, urlRegex)) {
+        return zodis;
+    }
+
     std::wstring svarusZodis = zodis;
 
     size_t start = svarusZodis.find_first_not_of(L"0123456789.,!?\"'()[]{}<>;:-„“”");
@@ -59,6 +66,20 @@ void skaitytiFaila(const std::string& failoPavadinimas, std::map<std::wstring, i
     failas.close();
 }
 
+std::vector<std::wstring> surastiURL(const std::wstring& tekstas) {
+
+    std::vector<std::wstring> urlai;
+
+    std::wregex regex(L"(https?://[\\w.-]+(/[\\w._~:/?#[\\]@!$&'()*+,;=%-]*)?)|(www\\.[\\w.-]+(/[\\w._~:/?#[\\]@!$&'()*+,;=%-]*)?)|(\\b[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\\b)");
+    std::wsregex_iterator pradzia(tekstas.begin(), tekstas.end(), regex);
+    std::wsregex_iterator pabaiga;
+
+    while (pradzia != pabaiga) {
+        urlai.push_back(pradzia->str());
+        ++pradzia;
+    }
+    return urlai;
+}
 
 void rasytiFaila(const std::map<std::wstring, int>& zodziuDaznis, const std::map<std::wstring, std::set<int>>& zodziuEilutes, const std::string& isvestiesFailoPavadinimas) {
     std::ofstream isvestiesFailas(isvestiesFailoPavadinimas, std::ios::out);
@@ -99,18 +120,51 @@ void rasytiFaila(const std::map<std::wstring, int>& zodziuDaznis, const std::map
     isvestiesFailas.close();
 }
 
+void rasytiURLFaila(const std::vector<std::wstring>& urlai, const std::string& isvestiesFailoPavadinimas) {
+    std::ofstream isvestiesFailas(isvestiesFailoPavadinimas, std::ios::out);
+
+    if (!isvestiesFailas.is_open()) {
+        std::cerr << "Nepavyko atidaryti failo: " << isvestiesFailoPavadinimas << std::endl;
+        return;
+    }
+
+    isvestiesFailas.imbue(std::locale("lt_LT.UTF-8"));
+
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> keitiklis;
+
+    isvestiesFailas << "Surasti URL adresai:\n";
+    for (const auto& url : urlai) {
+        isvestiesFailas << keitiklis.to_bytes(url) << "\n";
+    }
+
+    isvestiesFailas.close();
+}
+
 int main() {
     const std::string failoPavadinimas = "tekstas.txt";
     const std::string isvestiesFailoPavadinimas = "rezultatai.txt";
+
+    const std::string urlFailoPavadinimas = "tekstas_url.txt";
+    const std::string urlIsvestiesFailoPavadinimas = "rezultatai_url.txt";
 
     std::setlocale(LC_ALL, "lt_LT.UTF-8");
 
     std::map<std::wstring, int> zodziuDaznis;
     std::map<std::wstring, std::set<int>> zodziuEilutes;
 
-    skaitytiFaila(failoPavadinimas, zodziuDaznis, zodziuEilutes);
+    std::wstring urlTurinys;
+    std::vector<std::wstring> urlai;
 
+    skaitytiFaila(failoPavadinimas, zodziuDaznis, zodziuEilutes);
     rasytiFaila(zodziuDaznis, zodziuEilutes, isvestiesFailoPavadinimas);
+
+    std::wifstream urlFailas(urlFailoPavadinimas);
+    urlFailas.imbue(std::locale("lt_LT.UTF-8"));
+    std::wstringstream buffer;
+    buffer << urlFailas.rdbuf();
+    urlTurinys = buffer.str();
+    urlai = surastiURL(urlTurinys);
+    rasytiURLFaila(urlai, urlIsvestiesFailoPavadinimas);
 
     return 0;
 }
