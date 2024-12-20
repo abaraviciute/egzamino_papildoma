@@ -59,9 +59,12 @@ void rasytiFaila(const std::map<std::wstring, int>& zodziuDaznis, const std::str
 
     std::wstring_convert<std::codecvt_utf8<wchar_t>> keitiklis;
 
-    for (const auto& pora : zodziuDaznis) {
-        std::string eilute = keitiklis.to_bytes(pora.first + L": " + std::to_wstring(pora.second) + L"\n");
-        isvestiesFailas << eilute;
+    for (const auto& zodis : zodziuDaznis) {
+        if (zodis.second > 1) {
+            std::string eilute = keitiklis.to_bytes(zodis.first + L": " + std::to_wstring(zodis.second) + L"\n");
+            isvestiesFailas << eilute;
+        }
+
     }
 
     isvestiesFailas.close();
