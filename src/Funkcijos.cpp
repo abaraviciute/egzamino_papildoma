@@ -108,6 +108,8 @@ void rasytiFaila(const map<wstring, int>& zodziuDaznis, const map<wstring, set<i
     }
 
     isvestiesFailas.close();
+
+    cout << "Failas " << isvestiesFailoPavadinimas << " sukurtas." << endl;
 }
 
 void rasytiURLFaila(const vector<wstring>& urlai, const string& isvestiesFailoPavadinimas) {
@@ -128,4 +130,6 @@ void rasytiURLFaila(const vector<wstring>& urlai, const string& isvestiesFailoPa
     }
 
     isvestiesFailas.close();
+
+    cout << "Failas " << isvestiesFailoPavadinimas << " sukurtas." << endl;
 }

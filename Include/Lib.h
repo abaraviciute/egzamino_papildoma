@@ -19,6 +19,7 @@ using std::set;
 using std::vector;
 using std::to_string;
 using std::endl;
+using std::cout;
 using std::ifstream;
 using std::ofstream;
 using std::cerr;
