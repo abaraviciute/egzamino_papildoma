@@ -1,0 +1,33 @@
+#pragma once
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <locale>
+#include <codecvt>
+#include <map>
+#include <sstream>
+#include <algorithm>
+#include <set>
+#include <vector>
+#include <regex>
+
+using std::string;
+using std::wstring;
+using std::map;
+using std::set;
+using std::vector;
+using std::to_string;
+using std::endl;
+using std::ifstream;
+using std::ofstream;
+using std::cerr;
+using std::wregex;
+using std::wstring_convert;
+using std::codecvt_utf8;
+using std::wstringstream;
+using std::wsregex_iterator;
+using std::to_wstring;
+using std::wifstream;
+using std::locale;
+using std::ios;
